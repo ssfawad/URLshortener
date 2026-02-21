@@ -14,14 +14,22 @@ export default function App() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <ShortenForm onResult={setResult} />
+          <ShortenForm onResult={setResult} onSubmit={() => setResult(null)} />
           {result && (
             <ResultCard code={result.code} originalUrl={result.originalUrl} />
           )}
         </div>
 
         <p className="text-center text-xs text-gray-400 mt-6">
-          Built on GCP · Cloud Run · Cloud SQL · Terraform
+          Built on GCP · Cloud Run · Cloud SQL · Cloud Storage · Terraform ·{' '}
+          <a
+            href="https://github.com/ssfawad/URLshortener"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-gray-600 underline underline-offset-2"
+          >
+            View source
+          </a>
         </p>
       </div>
     </div>

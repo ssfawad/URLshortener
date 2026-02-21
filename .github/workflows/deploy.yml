@@ -82,4 +82,13 @@ jobs:
 
       - name: Upload to Cloud Storage
         run: |
-          gsutil -m rsync -r -d frontend/dist/ gs://${{ env.FRONTEND_BUCKET }}/
+          # Content-hashed assets: browsers can cache for 1 year (filenames change on rebuild)
+          gcloud storage cp \
+            --recursive \
+            --cache-control="public,max-age=31536000,immutable" \
+            frontend/dist/assets/ gs://${{ env.FRONTEND_BUCKET }}/assets/
+
+          # index.html must never be cached — it references the hashed asset filenames
+          gcloud storage cp \
+            --cache-control="no-cache,no-store,must-revalidate" \
+            frontend/dist/index.html gs://${{ env.FRONTEND_BUCKET }}/index.html

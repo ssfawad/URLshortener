@@ -4,12 +4,16 @@ resource "google_service_account" "api" {
   display_name = "${var.app_name} Cloud Run Service Account"
 }
 
-resource "google_project_iam_member" "secret_accessor" {
-  project = var.project_id
-  role    = "roles/secretmanager.secretAccessor"
-  member  = "serviceAccount:${google_service_account.api.email}"
+# Scoped to the specific secret — not all secrets in the project
+resource "google_secret_manager_secret_iam_member" "secret_accessor" {
+  project   = var.project_id
+  secret_id = var.db_password_secret_id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.api.email}"
 }
 
+# roles/cloudsql.client must be bound at project level — the Google provider v5
+# does not support resource-scoped bindings for this role via Terraform
 resource "google_project_iam_member" "cloudsql_client" {
   project = var.project_id
   role    = "roles/cloudsql.client"
@@ -75,6 +79,11 @@ resource "google_cloud_run_v2_service" "api" {
         value = "production"
       }
 
+      env {
+        name  = "CORS_ORIGIN"
+        value = var.cors_origin
+      }
+
       # DB password injected from Secret Manager at runtime — never in image or env files
       env {
         name = "DB_PASSWORD"
@@ -110,8 +119,14 @@ resource "google_cloud_run_v2_service" "api" {
     }
   }
 
+  # GitHub Actions manages the image tag after first deploy — prevent Terraform
+  # from reverting it to :latest on subsequent applies
+  lifecycle {
+    ignore_changes = [template[0].containers[0].image]
+  }
+
   depends_on = [
-    google_project_iam_member.secret_accessor,
+    google_secret_manager_secret_iam_member.secret_accessor,
     google_project_iam_member.cloudsql_client,
   ]
 }

@@ -4,8 +4,6 @@ const pool = require('../db/pool');
 
 const router = express.Router();
 
-const URL_REGEX = /^https?:\/\/.+/;
-
 // POST /api/shorten — create a short URL
 router.post('/shorten', async (req, res) => {
   const { url } = req.body;
@@ -14,12 +12,17 @@ router.post('/shorten', async (req, res) => {
     return res.status(400).json({ error: 'url is required' });
   }
 
-  if (!URL_REGEX.test(url)) {
-    return res.status(400).json({ error: 'Invalid URL. Must start with http:// or https://' });
-  }
-
   if (url.length > 2048) {
     return res.status(400).json({ error: 'URL too long (max 2048 characters)' });
+  }
+
+  try {
+    const parsed = new URL(url);
+    if (!['http:', 'https:'].includes(parsed.protocol)) {
+      return res.status(400).json({ error: 'Invalid URL. Must start with http:// or https://' });
+    }
+  } catch {
+    return res.status(400).json({ error: 'Invalid URL. Must start with http:// or https://' });
   }
 
   const code = nanoid(7);

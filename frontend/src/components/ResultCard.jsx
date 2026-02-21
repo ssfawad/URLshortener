@@ -9,9 +9,14 @@ export default function ResultCard({ code, originalUrl }) {
   const shortUrl = `${apiBase}/r/${code}`
 
   async function handleCopy() {
-    await navigator.clipboard.writeText(shortUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(shortUrl)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard API unavailable — select the link text so user can copy manually
+      window.getSelection()?.selectAllChildren(document.querySelector('a[href="' + shortUrl + '"]'))
+    }
   }
 
   return (

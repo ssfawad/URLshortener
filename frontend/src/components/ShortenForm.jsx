@@ -1,12 +1,13 @@
 import { useState } from 'react'
 
-export default function ShortenForm({ onResult }) {
+export default function ShortenForm({ onResult, onSubmit }) {
   const [url, setUrl] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   async function handleSubmit(e) {
     e.preventDefault()
+    onSubmit?.()
     setError('')
     setLoading(true)
 

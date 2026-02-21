@@ -37,3 +37,8 @@ variable "db_password_secret_id" {
   description = "Secret Manager secret ID for the DB password"
   type        = string
 }
+
+variable "cors_origin" {
+  description = "Allowed CORS origin for the API (e.g. the frontend GCS URL origin)"
+  type        = string
+}

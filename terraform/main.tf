@@ -77,6 +77,8 @@ module "cloudrun" {
   db_name                  = var.db_name
   db_user                  = var.db_user
   db_password_secret_id    = module.secret_manager.db_password_secret_id
+  # Frontend is served from GCS — the browser sends this as the Origin header
+  cors_origin              = "https://storage.googleapis.com"
   depends_on               = [module.cloudsql, module.artifact_registry, module.secret_manager]
 }
 

@@ -22,7 +22,7 @@ router.get('/:code', async (req, res) => {
     pool
       .query('UPDATE urls SET click_count = click_count + 1 WHERE short_code = $1', [code])
       .catch((err) => console.error('Click increment error (cache hit):', err));
-    return res.redirect(301, cached);
+    return res.redirect(302, cached);
   }
 
   try {
@@ -37,7 +37,7 @@ router.get('/:code', async (req, res) => {
 
     const { original_url } = result.rows[0];
     cache.set(code, original_url);
-    res.redirect(301, original_url);
+    res.redirect(302, original_url);
   } catch (err) {
     console.error('Error resolving short URL:', err);
     res.status(500).json({ error: 'Failed to resolve URL' });

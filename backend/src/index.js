@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 const pool = require('./db/pool');
 const shortenRouter = require('./routes/shorten');
 const redirectRouter = require('./routes/redirect');
@@ -10,13 +11,26 @@ const redirectRouter = require('./routes/redirect');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Trust Cloud Run's load balancer so req.ip reflects the real client IP
+app.set('trust proxy', 1);
+
 app.use(helmet());
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
 app.use(express.json());
 
+// 20 URL-shortening requests per minute per IP
+const shortenLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later' },
+});
+
 // Health check — used by Cloud Run startup/liveness probes
 app.get('/healthz', (_req, res) => res.json({ status: 'ok' }));
 
+app.use('/api/shorten', shortenLimiter);
 app.use('/api', shortenRouter);
 app.use('/r', redirectRouter);
 
