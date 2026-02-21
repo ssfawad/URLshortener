@@ -20,26 +20,29 @@ export default function ResultCard({ code, originalUrl }) {
   }
 
   return (
-    <div className="w-full mt-6 p-5 bg-green-50 border border-green-200 rounded-lg">
-      <p className="text-sm text-gray-500 mb-1">Short URL</p>
+    <div className="w-full mt-6 p-5 bg-white/10 border border-white/20 rounded-xl backdrop-blur-sm">
+      <p className="text-sm text-white/60 mb-2">Your short link</p>
       <div className="flex items-center gap-3">
         <a
           href={shortUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex-1 text-blue-600 font-mono text-sm break-all hover:underline"
+          className="flex-1 text-indigo-300 font-mono text-sm break-all hover:text-indigo-200 transition-colors"
         >
           {shortUrl}
         </a>
         <button
           onClick={handleCopy}
-          className="shrink-0 px-3 py-1.5 text-sm font-medium bg-white border border-gray-300
-                     rounded-md hover:bg-gray-50 transition-colors"
+          className={`shrink-0 px-3 py-1.5 text-sm font-medium border rounded-lg transition-all duration-200
+            ${copied
+              ? 'bg-green-500/80 border-green-400 text-white'
+              : 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+            }`}
         >
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <p className="mt-3 text-xs text-gray-400 truncate">
+      <p className="mt-3 text-xs text-white/40 truncate">
         Original: {originalUrl}
       </p>
     </div>

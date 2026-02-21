@@ -44,20 +44,24 @@ export default function ShortenForm({ onResult, onSubmit }) {
           onChange={(e) => setUrl(e.target.value)}
           placeholder="https://example.com/your/long/url"
           required
-          className="flex-1 px-4 py-3 rounded-lg border border-gray-300 text-gray-900 placeholder-gray-400
-                     focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/40
+                     focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
+                     backdrop-blur-sm transition-colors"
         />
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400
-                     text-white font-semibold rounded-lg transition-colors"
+          className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600
+                     hover:from-indigo-600 hover:to-purple-700
+                     disabled:opacity-60 disabled:cursor-not-allowed
+                     text-white font-semibold rounded-xl transition-all duration-200
+                     shadow-lg shadow-purple-900/50"
         >
           {loading ? 'Shortening…' : 'Shorten'}
         </button>
       </div>
       {error && (
-        <p className="mt-2 text-sm text-red-600">{error}</p>
+        <p className="mt-2 text-sm text-red-400">{error}</p>
       )}
     </form>
   )
