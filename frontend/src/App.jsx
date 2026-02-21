@@ -32,7 +32,16 @@ export default function App() {
         </div>
 
         <p className="text-center text-xs text-white/30 mt-6">
-          Built on GCP · Cloud Run · Cloud SQL · Cloud Storage · Terraform ·{' '}
+          Built by{' '}
+          <a
+            href="https://github.com/ssfawad"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-white/60 underline underline-offset-2 transition-colors"
+          >
+            Syed Fawad
+          </a>
+          {' '}· GCP · Cloud Run · Cloud SQL · Cloud Storage · Terraform ·{' '}
           <a
             href="https://github.com/ssfawad/URLshortener"
             target="_blank"
